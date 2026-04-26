@@ -51,9 +51,9 @@ python serve.py 8080
 
 ## 部署
 
-每次 push 到 `main` 分支时，GitHub Actions 会自动把根目录（除 `tests/` `tools/` 等）打包发布到 GitHub Pages。
+当前使用 Render Static Site 部署。发布时只需要静态资源：`index.html`、`tutorial.html`、`robots.txt`、`sitemap.xml` 和 `assets/`。
 
-部署地址：https://siyuan-123.github.io/kuaima-cursor-pool/
+部署地址：https://kuaima-cursor-pool.onrender.com/
 
 ## 客户端下载
 
@@ -90,9 +90,9 @@ python serve.py
 
 ### Deploy
 
-Every push to `main` triggers GitHub Actions which deploys the static site to GitHub Pages.
+The site is currently deployed as a Render Static Site. Only static assets are required for production.
 
-Live: https://siyuan-123.github.io/kuaima-cursor-pool/
+Live: https://kuaima-cursor-pool.onrender.com/
 
 ### Contact
 

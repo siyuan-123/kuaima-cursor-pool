@@ -12,6 +12,11 @@
   const dict = {
     zh: {
       brand: '快码 cursor 号池',
+      // SEO
+      'seo.home.title': '快码 Cursor 号池 | Cursor 无感换号账号池 · 按刀计费',
+      'seo.home.description': '快码 Cursor 号池提供 Cursor 账号池、无感换号、账号自动切换和按刀计费方案，支持 Windows/macOS，适合 AI 编程用户快速上手。',
+      'seo.tutorial.title': 'Cursor 无感换号使用教程 | 快码 Cursor 号池',
+      'seo.tutorial.description': '快码 Cursor 号池使用教程：了解如何下载客户端、完成充值、开启 Cursor 无感换号，并在额度耗尽时自动切换账号继续编码。',
       // Nav
       'nav.home': '首页',
       'nav.tutorial': '使用教程',
@@ -89,6 +94,11 @@
 
     en: {
       brand: 'KuaiMa · Cursor Pool',
+      // SEO
+      'seo.home.title': 'KuaiMa Cursor Pool | Seamless Cursor Account Switching',
+      'seo.home.description': 'KuaiMa Cursor Pool helps Cursor users switch accounts seamlessly, manage account pools, and pay only for actual usage on Windows and macOS.',
+      'seo.tutorial.title': 'Cursor Seamless Switching Tutorial | KuaiMa Cursor Pool',
+      'seo.tutorial.description': 'Learn how to download KuaiMa, top up your balance, enable seamless Cursor account switching, and keep coding when quota runs out.',
       'nav.home': 'Home',
       'nav.tutorial': 'Tutorial',
       'nav.download': 'Download',

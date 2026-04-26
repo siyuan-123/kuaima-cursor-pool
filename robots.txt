@@ -1,6 +1,6 @@
-﻿User-agent: *
+User-agent: *
 Allow: /
 Disallow: /tests/
 Disallow: /tools/
 
-Sitemap: https://siyuan-123.github.io/kuaima-cursor-pool/sitemap.xml
+Sitemap: https://kuaima-cursor-pool.onrender.com/sitemap.xml
