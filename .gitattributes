@@ -1,0 +1,27 @@
+# 默认所有文本文件统一使用 LF 换行（避免 Windows 与 Linux/macOS 协作时换行符冲突）
+* text=auto eol=lf
+
+# 显式声明文本格式
+*.html  text eol=lf
+*.css   text eol=lf
+*.js    text eol=lf
+*.json  text eol=lf
+*.md    text eol=lf
+*.txt   text eol=lf
+*.xml   text eol=lf
+*.py    text eol=lf
+*.yml   text eol=lf
+*.yaml  text eol=lf
+
+# 二进制资源（防止 git 误处理换行）
+*.gif   binary
+*.png   binary
+*.jpg   binary
+*.jpeg  binary
+*.webp  binary
+*.ico   binary
+*.woff  binary
+*.woff2 binary
+
+# Linguist 统计排除大型 GIF 资源（让 GitHub 显示语言占比更准确）
+assets/images/*.gif linguist-vendored
