@@ -57,7 +57,7 @@ python serve.py 8080
 
 ## 客户端下载
 
-- Windows：https://share.feijipan.com/s/0v4O75TM
+- Windows：https://share.feijipan.com/s/gl4XpQHt
 - macOS：https://share.feijipan.com/s/J2xt9TWX
 
 ## 联系
