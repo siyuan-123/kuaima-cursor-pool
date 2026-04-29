@@ -15,7 +15,7 @@
 - **响应式**：480 / 767 / 1023 多断点，含触屏 hover 防粘性优化
 - **SEO 完备**：JSON-LD（SoftwareApplication / HowTo）、hreflang、canonical、OG/Twitter Card、sitemap.xml、robots.txt
 - **GIF 教程**：原生 `loading="lazy"` 懒加载，图片自适应原始比例
-- **客服微信**：一键复制（双路 fallback：clipboard API + execCommand）
+- **客服联系方式**：一键复制备用 QQ（双路 fallback：clipboard API + execCommand）
 
 ## 本地运行
 
@@ -62,7 +62,7 @@ python serve.py 8080
 
 ## 联系
 
-客服微信：`Aka-CncLC`
+备用 QQ：`1051522712`
 
 ---
 
@@ -79,7 +79,7 @@ python serve.py 8080
 - **Responsive**: 480 / 767 / 1023 breakpoints, with touch hover-stickiness fix
 - **SEO**: JSON-LD (SoftwareApplication / HowTo), hreflang, canonical, OG/Twitter, sitemap.xml, robots.txt
 - **Lazy GIF tutorial**: Native `loading="lazy"`, images preserve original aspect ratio
-- **Copy WeChat ID**: One-click copy with dual fallback (Clipboard API + execCommand)
+- **Copy support contact**: One-click backup QQ copy with dual fallback (Clipboard API + execCommand)
 
 ### Run Locally
 
@@ -96,7 +96,7 @@ Live: https://kuaima-cursor-pool.onrender.com/
 
 ### Contact
 
-WeChat Support: `Aka-CncLC`
+Backup QQ: `1051522712`
 
 ---
 

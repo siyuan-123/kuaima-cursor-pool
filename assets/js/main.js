@@ -2,7 +2,7 @@
  * 全局交互入口
  *  - GIF / 元素懒加载（IntersectionObserver，作为 native lazy 的 fallback）
  *  - 系统检测：Mac 优先显示 macOS 按钮
- *  - 客服微信号一键复制（按钮自身反馈）
+ *  - 客服联系方式一键复制（按钮自身反馈）
  *  - 移动端导航开合
  *  - 锚点平滑滚动（含 #top 回顶）
  */
@@ -17,6 +17,7 @@
 
     initLazyMedia();
     initCopyButtons();
+    initFloatingWechat();
     initMenuToggle();
     initOSDetection();
     initLangChangeReset();
@@ -109,7 +110,7 @@
     img.src = src;
   }
 
-  /** ---------------------- 复制微信号 ---------------------- */
+  /** ---------------------- 复制联系方式 ---------------------- */
   function initCopyButtons() {
     document.querySelectorAll('[data-copy]').forEach(btn => {
       btn.addEventListener('click', e => {
@@ -156,6 +157,51 @@
       btn.classList.remove('is-success');
       btn.textContent = translate(originalKey);
     }, 1800);
+  }
+
+  /** ---------------------- 悬浮客服二维码 ---------------------- */
+  function initFloatingWechat() {
+    const widget = document.querySelector('[data-floating-wechat]');
+    if (!widget) return;
+
+    const toggle = widget.querySelector('[data-floating-wechat-toggle]');
+    const panel = widget.querySelector('.floating-wechat__panel');
+    const close = widget.querySelector('[data-floating-wechat-close]');
+    if (!toggle || !panel) return;
+
+    function setOpen(open) {
+      widget.classList.toggle('is-open', open);
+      toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+      panel.setAttribute('aria-hidden', open ? 'false' : 'true');
+    }
+
+    setOpen(widget.classList.contains('is-open'));
+
+    toggle.addEventListener('click', e => {
+      e.preventDefault();
+      setOpen(!widget.classList.contains('is-open'));
+    });
+
+    if (close) {
+      close.addEventListener('click', e => {
+        e.preventDefault();
+        setOpen(false);
+        toggle.focus();
+      });
+    }
+
+    document.addEventListener('click', e => {
+      if (!widget.contains(e.target)) setOpen(false);
+    });
+
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape') setOpen(false);
+    });
+
+    if (window.matchMedia && window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
+      widget.addEventListener('mouseenter', () => setOpen(true));
+      widget.addEventListener('mouseleave', () => setOpen(false));
+    }
   }
 
   /** ---------------------- 移动端菜单 ---------------------- */

@@ -319,6 +319,45 @@
     </section>
   </main>
 
+  <!-- 悬浮客服二维码：默认停靠右侧，点击/悬停展开 -->
+  <aside class="floating-wechat is-open" data-floating-wechat aria-label="微信客服" data-i18n-attr="aria-label:wechat.aria">
+    <div class="floating-wechat__panel" id="floatingWechatPanel" aria-hidden="false" aria-labelledby="floatingWechatTitle">
+      <button type="button" class="floating-wechat__close" data-floating-wechat-close aria-label="收起客服二维码" data-i18n-attr="aria-label:wechat.close">×</button>
+      <div class="floating-wechat__qr">
+        <img
+          src="assets/images/wechat-service-qr.jpg"
+          alt="快码客服微信二维码"
+          width="631"
+          height="658"
+          loading="lazy"
+          decoding="async"
+          data-i18n-attr="alt:wechat.alt"
+        />
+      </div>
+      <div class="floating-wechat__content">
+        <span class="floating-wechat__eyebrow" data-i18n="wechat.eyebrow">微信客服</span>
+        <h2 id="floatingWechatTitle" data-i18n="wechat.title">扫码添加客服</h2>
+        <div class="floating-wechat__promo" data-i18n="wechat.promo">加微信 · 首冲50送10刀</div>
+        <p data-i18n="wechat.desc">下载、充值、开票或使用问题，扫码添加客服。备用 QQ：1051522712。</p>
+        <button type="button" class="copy-btn floating-wechat__copy" data-copy="1051522712" data-i18n="wechat.copy">复制备用QQ</button>
+      </div>
+    </div>
+    <button
+      type="button"
+      class="floating-wechat__dock"
+      data-floating-wechat-toggle
+      aria-expanded="true"
+      aria-controls="floatingWechatPanel"
+      aria-label="展开客服二维码"
+      data-i18n-attr="aria-label:wechat.toggle"
+    >
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M21 11.5a8.4 8.4 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.4 8.4 0 0 1-3.8-.9L3 21l1.9-5.7A8.4 8.4 0 0 1 4 11.5a8.5 8.5 0 0 1 17 0Z"></path>
+      </svg>
+      <span data-i18n="wechat.handle">客服</span>
+    </button>
+  </aside>
+
   <!-- Footer -->
   <footer class="site-footer" id="contact">
     <div class="container">
@@ -348,11 +387,11 @@
                 <svg viewBox="0 0 24 24" fill="currentColor"><path d="M9.5 4C5.36 4 2 6.91 2 10.5c0 1.95 1.05 3.71 2.7 4.91-.06.27-.45 1.51-.51 1.74 0 0-.01.06.03.09.04.03.09 0 .09 0 .29-.04 1.78-1.16 2.05-1.34.85.24 1.76.37 2.7.37.18 0 .36 0 .54-.02-.34-.7-.52-1.46-.52-2.25 0-3.27 3.13-5.92 7-5.92.13 0 .26 0 .39.01C15.99 5.7 13.04 4 9.5 4zM7 9c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1zm5 0c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1zM22 13c0-2.92-2.91-5.34-6.5-5.34S9 10.08 9 13s2.91 5.34 6.5 5.34c.79 0 1.55-.13 2.27-.36.21.14 1.43 1.05 1.66 1.08 0 0 .04.02.07 0 .03-.02.02-.06.02-.06-.05-.18-.36-1.18-.41-1.4C20.18 16.65 22 14.97 22 13zM13 12c-.41 0-.75-.34-.75-.75s.34-.75.75-.75.75.34.75.75-.34.75-.75.75zm5 0c-.41 0-.75-.34-.75-.75s.34-.75.75-.75.75.34.75.75-.34.75-.75.75z"/></svg>
               </div>
               <div>
-                <div class="contact-card__label" data-i18n="footer.contact.label">客服微信</div>
-                <div class="contact-card__value" id="wechatId">Aka-CncLC</div>
+                <div class="contact-card__label" data-i18n="footer.contact.label">备用 QQ</div>
+                <div class="contact-card__value" id="supportQq">1051522712</div>
               </div>
             </div>
-            <button type="button" class="copy-btn" data-copy="Aka-CncLC" data-i18n-copy data-i18n="footer.copy">复制</button>
+            <button type="button" class="copy-btn" data-copy="1051522712" data-i18n-copy data-i18n="footer.copy">复制QQ</button>
           </div>
         </div>
       </div>
