@@ -190,17 +190,12 @@
       });
     }
 
-    document.addEventListener('click', e => {
-      if (!widget.contains(e.target)) setOpen(false);
-    });
-
     document.addEventListener('keydown', e => {
       if (e.key === 'Escape') setOpen(false);
     });
 
     if (window.matchMedia && window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
       widget.addEventListener('mouseenter', () => setOpen(true));
-      widget.addEventListener('mouseleave', () => setOpen(false));
     }
   }
 
