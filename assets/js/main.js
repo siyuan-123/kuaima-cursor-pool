@@ -44,6 +44,13 @@
           return;
         }
 
+        if (href === '#contact' && typeof window.KuaiMaOpenSupport === 'function') {
+          e.preventDefault();
+          window.KuaiMaOpenSupport({ focus: true });
+          if (history.replaceState) history.replaceState(null, '', '#contact');
+          return;
+        }
+
         const target = document.querySelector(href);
         if (!target) return;
         e.preventDefault();
@@ -104,7 +111,7 @@
     img.addEventListener('error', () => {
       container.classList.remove('is-loading');
       container.classList.add('is-error');
-      container.setAttribute('data-loading-text', '加载失败,请刷新');
+      container.setAttribute('data-loading-text', '加载失败，请刷新');
     });
 
     img.src = src;
@@ -175,7 +182,33 @@
       panel.setAttribute('aria-hidden', open ? 'false' : 'true');
     }
 
+    function openSupport(options) {
+      const opts = options || {};
+      setOpen(true);
+      widget.classList.remove('is-attention');
+      // 强制重启动画，让已经展开时再次点击也有“弹出”反馈
+      void widget.offsetWidth;
+      widget.classList.add('is-attention');
+      window.clearTimeout(widget._supportAttentionTimer);
+      widget._supportAttentionTimer = window.setTimeout(() => {
+        widget.classList.remove('is-attention');
+      }, 1200);
+
+      if (opts.focus) {
+        const focusTarget = widget.querySelector('.floating-wechat__copy') || close || toggle;
+        if (focusTarget && typeof focusTarget.focus === 'function') {
+          focusTarget.focus({ preventScroll: true });
+        }
+      }
+    }
+
+    window.KuaiMaOpenSupport = openSupport;
+
     setOpen(widget.classList.contains('is-open'));
+
+    if (window.location.hash === '#contact') {
+      window.setTimeout(() => openSupport({ focus: false }), 120);
+    }
 
     toggle.addEventListener('click', e => {
       e.preventDefault();
