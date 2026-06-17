@@ -550,12 +550,6 @@ section {
   color: var(--text-secondary);
 }
 
-.hero__price-inline {
-  display: inline;
-  color: var(--text-strong);
-  font-weight: 800;
-}
-
 .hero__cta {
   display: flex;
   flex-wrap: wrap;
