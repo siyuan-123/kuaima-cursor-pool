@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>快码埋点统计后台</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #07111f;
+      --panel: rgba(15, 23, 42, 0.92);
+      --panel2: rgba(17, 34, 56, 0.92);
+      --line: rgba(148, 163, 184, 0.18);
+      --text: #e5f2ff;
+      --muted: #8aa0b8;
+      --cyan: #22d3ee;
+      --green: #34d399;
+      --orange: #f59e0b;
+      --red: #fb7185;
+      --shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at 20% 0%, rgba(34, 211, 238, 0.16), transparent 34%),
+        radial-gradient(circle at 88% 12%, rgba(52, 211, 153, 0.14), transparent 32%),
+        var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+    }
+
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      backdrop-filter: blur(14px);
+      background: rgba(7, 17, 31, 0.78);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .wrap { width: min(1440px, calc(100% - 32px)); margin: 0 auto; }
+    .topbar { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 18px 0; }
+    h1 { margin: 0; font-size: 22px; letter-spacing: 0.02em; }
+    h2 { margin: 0 0 14px; font-size: 18px; }
+    .sub { margin-top: 5px; color: var(--muted); font-size: 13px; }
+    .actions { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+    button, select, a.btn {
+      border: 1px solid rgba(34, 211, 238, 0.32);
+      background: rgba(34, 211, 238, 0.10);
+      color: var(--text);
+      border-radius: 10px;
+      padding: 9px 12px;
+      cursor: pointer;
+      text-decoration: none;
+      font-size: 14px;
+    }
+    button:hover, a.btn:hover { background: rgba(34, 211, 238, 0.18); }
+    select { background: #0f172a; }
+
+    main { padding: 22px 0 50px; }
+    .grid { display: grid; gap: 16px; }
+    .cards { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    .two { grid-template-columns: 1.1fr 0.9fr; }
+    .panel {
+      background: linear-gradient(180deg, var(--panel), rgba(8, 14, 26, 0.92));
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      box-shadow: var(--shadow);
+      padding: 18px;
+      overflow: hidden;
+    }
+    .card-title { color: var(--muted); font-size: 13px; margin-bottom: 8px; }
+    .card-value { font-size: 28px; font-weight: 800; line-height: 1.1; }
+    .metric-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; margin-top: 14px; }
+    .metric { padding: 10px; border-radius: 12px; background: rgba(148, 163, 184, 0.06); border: 1px solid var(--line); }
+    .metric span { display: block; color: var(--muted); font-size: 12px; }
+    .metric strong { display: block; margin-top: 4px; font-size: 17px; }
+    .ok { color: var(--green); }
+    .warn { color: var(--orange); }
+    .bad { color: var(--red); }
+    .cyan { color: var(--cyan); }
+
+    .chart {
+      width: 100%; height: 240px; display: block;
+      background: linear-gradient(180deg, rgba(34, 211, 238, 0.06), transparent);
+      border: 1px solid var(--line); border-radius: 14px;
+    }
+    .legend { display: flex; gap: 14px; flex-wrap: wrap; color: var(--muted); font-size: 13px; margin: 10px 0 0; }
+    .dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 6px; }
+    .dot-pv { background: var(--cyan); }
+    .dot-uv { background: var(--green); }
+    .dot-click { background: var(--orange); }
+
+    .table-wrap { width: 100%; overflow: auto; border: 1px solid var(--line); border-radius: 14px; }
+    table { width: 100%; border-collapse: collapse; min-width: 760px; }
+    th, td { padding: 11px 12px; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; font-size: 13px; }
+    th { color: #bdd7ef; background: rgba(148, 163, 184, 0.07); white-space: nowrap; }
+    td { color: #d8e7f6; }
+    tr:hover td { background: rgba(34, 211, 238, 0.04); }
+    code, .mono { font-family: "Cascadia Code", Consolas, monospace; }
+    .muted { color: var(--muted); }
+    .truncate { max-width: 380px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .tag { display: inline-flex; align-items: center; border-radius: 999px; padding: 3px 8px; background: rgba(34, 211, 238, 0.10); border: 1px solid rgba(34, 211, 238, 0.24); color: #b8f4ff; font-size: 12px; }
+    details summary { cursor: pointer; color: var(--cyan); }
+    pre { max-width: 520px; white-space: pre-wrap; word-break: break-word; color: #cbd5e1; margin: 8px 0 0; }
+    .section { margin-top: 16px; }
+    .error { display: none; margin: 16px 0; padding: 12px 14px; border-radius: 12px; border: 1px solid rgba(251, 113, 133, 0.35); color: #fecdd3; background: rgba(251, 113, 133, 0.1); }
+
+    @media (max-width: 1100px) {
+      .cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .two { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 640px) {
+      .wrap { width: min(100% - 20px, 1440px); }
+      .topbar { align-items: flex-start; flex-direction: column; }
+      .cards { grid-template-columns: 1fr; }
+      .metric-list { grid-template-columns: 1fr; }
+      table { min-width: 680px; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="wrap topbar">
+      <div>
+        <h1>快码埋点统计后台</h1>
+        <div class="sub">每 5 分钟 / 每小时访客、访问量、停留时间、详细点击事件、IP 统计</div>
+      </div>
+      <div class="actions">
+        <span class="muted" id="generatedAt">未加载</span>
+        <button type="button" id="refreshBtn">刷新</button>
+        <a class="btn" href="/api/export.csv?days=7">导出近 7 天 CSV</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <div class="error" id="errorBox"></div>
+
+    <section class="grid cards" id="summaryCards"></section>
+
+    <section class="grid two section">
+      <div class="panel">
+        <h2>最近 6 小时：每 5 分钟趋势</h2>
+        <svg class="chart" id="fiveChart" role="img" aria-label="每五分钟趋势图"></svg>
+        <div class="legend"><span><i class="dot dot-pv"></i>PV</span><span><i class="dot dot-uv"></i>UV</span><span><i class="dot dot-click"></i>点击</span></div>
+      </div>
+      <div class="panel">
+        <h2>最近 48 小时：每小时趋势</h2>
+        <svg class="chart" id="hourChart" role="img" aria-label="每小时趋势图"></svg>
+        <div class="legend"><span><i class="dot dot-pv"></i>PV</span><span><i class="dot dot-uv"></i>UV</span><span><i class="dot dot-click"></i>点击</span></div>
+      </div>
+    </section>
+
+    <section class="grid two section">
+      <div class="panel">
+        <h2>详细点击排行（近 24 小时）</h2>
+        <div class="table-wrap"><table id="clickTable"></table></div>
+      </div>
+      <div class="panel">
+        <h2>IP 统计（近 24 小时）</h2>
+        <div class="table-wrap"><table id="ipTable"></table></div>
+      </div>
+    </section>
+
+    <section class="grid two section">
+      <div class="panel">
+        <h2>页面排行（近 24 小时）</h2>
+        <div class="table-wrap"><table id="pageTable"></table></div>
+      </div>
+      <div class="panel">
+        <h2>来源排行（近 24 小时）</h2>
+        <div class="table-wrap"><table id="refTable"></table></div>
+      </div>
+    </section>
+
+    <section class="panel section">
+      <div style="display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap;margin-bottom:14px;">
+        <h2 style="margin:0;">最近事件明细</h2>
+        <div class="actions">
+          <select id="eventFilter">
+            <option value="">全部事件</option>
+            <option value="click">只看点击</option>
+            <option value="page_view">只看访问</option>
+            <option value="heartbeat">只看心跳</option>
+            <option value="page_leave">只看离开</option>
+          </select>
+          <select id="eventLimit">
+            <option value="50">50 条</option>
+            <option value="100" selected>100 条</option>
+            <option value="200">200 条</option>
+            <option value="500">500 条</option>
+          </select>
+        </div>
+      </div>
+      <div class="table-wrap"><table id="eventTable"></table></div>
+    </section>
+  </main>
+
+  <script>
+    const $ = (id) => document.getElementById(id);
+    const state = { stats: null, events: [] };
+
+    $('refreshBtn').addEventListener('click', loadAll);
+    $('eventFilter').addEventListener('change', loadEvents);
+    $('eventLimit').addEventListener('change', loadEvents);
+    setInterval(loadAll, 30000);
+    loadAll();
+
+    async function loadAll() {
+      hideError();
+      try {
+        const statsRes = await fetch('/api/stats', { cache: 'no-store' });
+        if (!statsRes.ok) throw new Error('统计接口异常：HTTP ' + statsRes.status);
+        const statsJson = await statsRes.json();
+        if (!statsJson.ok) throw new Error(statsJson.error || '统计接口返回失败');
+        state.stats = statsJson.data;
+        renderStats(state.stats);
+        await loadEvents();
+      } catch (err) {
+        showError(err.message || String(err));
+      }
+    }
+
+    async function loadEvents() {
+      const event = $('eventFilter').value;
+      const limit = $('eventLimit').value;
+      const url = '/api/events?limit=' + encodeURIComponent(limit) + (event ? '&event=' + encodeURIComponent(event) : '');
+      const res = await fetch(url, { cache: 'no-store' });
+      if (!res.ok) throw new Error('事件接口异常：HTTP ' + res.status);
+      const json = await res.json();
+      if (!json.ok) throw new Error(json.error || '事件接口返回失败');
+      state.events = json.data || [];
+      renderEvents(state.events);
+    }
+
+    function renderStats(data) {
+      $('generatedAt').textContent = '更新时间：' + data.generated_at;
+      renderCards(data.windows);
+      drawChart($('fiveChart'), data.timelines.fiveMinute || []);
+      drawChart($('hourChart'), data.timelines.hourly || []);
+      renderClickTable(data.topClicks || []);
+      renderIpTable(data.ipStats || []);
+      renderSimpleTable($('pageTable'), ['页面', 'PV', 'UV'], (data.topPages || []).map(x => [x.page || '-', x.pv || 0, x.uv || 0]));
+      renderSimpleTable($('refTable'), ['来源', 'PV', 'UV'], (data.topReferrers || []).map(x => [x.referrer || '-', x.pv || 0, x.uv || 0]));
+    }
+
+    function renderCards(windows) {
+      const defs = [
+        ['最近 5 分钟', windows.last5m],
+        ['最近 1 小时', windows.last1h],
+        ['今日', windows.today],
+        ['最近 24 小时', windows.last24h]
+      ];
+      $('summaryCards').innerHTML = defs.map(([title, item]) => `
+        <div class="panel">
+          <div class="card-title">${escapeHtml(title)}</div>
+          <div class="card-value"><span class="cyan">${num(item.uv)}</span> UV / ${num(item.pv)} PV</div>
+          <div class="metric-list">
+            <div class="metric"><span>会话</span><strong>${num(item.sessions)}</strong></div>
+            <div class="metric"><span>平均停留</span><strong>${duration(item.avg_duration_ms)}</strong></div>
+            <div class="metric"><span>总点击</span><strong>${num(item.clicks)}</strong></div>
+            <div class="metric"><span>下载点击</span><strong class="ok">${num(item.download_clicks)}</strong></div>
+            <div class="metric"><span>联系客服</span><strong class="warn">${num(item.contact_clicks)}</strong></div>
+            <div class="metric"><span>复制 QQ</span><strong>${num(item.copy_contact_clicks)}</strong></div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function drawChart(svg, rows) {
+      const width = svg.clientWidth || 640;
+      const height = svg.clientHeight || 240;
+      const pad = 26;
+      svg.setAttribute('viewBox', `0 0 ${width} ${height}`);
+      const maxY = Math.max(1, ...rows.flatMap(r => [r.pv || 0, r.uv || 0, r.clicks || 0]));
+      const x = (i) => rows.length <= 1 ? pad : pad + i * ((width - pad * 2) / (rows.length - 1));
+      const y = (v) => height - pad - (Number(v || 0) / maxY) * (height - pad * 2);
+      const line = (key, color) => {
+        const pts = rows.map((r, i) => `${x(i)},${y(r[key])}`).join(' ');
+        return `<polyline points="${pts}" fill="none" stroke="${color}" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />`;
+      };
+      const grid = Array.from({ length: 5 }, (_, i) => {
+        const gy = pad + i * ((height - pad * 2) / 4);
+        return `<line x1="${pad}" y1="${gy}" x2="${width - pad}" y2="${gy}" stroke="rgba(148,163,184,.16)" />`;
+      }).join('');
+      svg.innerHTML = `
+        ${grid}
+        <line x1="${pad}" y1="${height - pad}" x2="${width - pad}" y2="${height - pad}" stroke="rgba(148,163,184,.25)" />
+        ${line('pv', '#22d3ee')}
+        ${line('uv', '#34d399')}
+        ${line('clicks', '#f59e0b')}
+        <text x="${pad}" y="18" fill="#8aa0b8" font-size="12">最大值 ${maxY}</text>
+      `;
+    }
+
+    function renderClickTable(rows) {
+      renderTable($('clickTable'), ['类型', '标签', '文字', '目标链接', '次数', 'IP数'], rows.map(x => [
+        tag(x.category), escapeHtml(x.label || '-'), cell(x.target_text || '-'), linkCell(x.target_url), num(x.count), num(x.ip_count)
+      ]));
+    }
+
+    function renderIpTable(rows) {
+      renderTable($('ipTable'), ['IP', 'PV', '点击', '事件', 'UV', '首次', '最近'], rows.map(x => [
+        `<code>${escapeHtml(x.ip || '-')}</code>`, num(x.pv), num(x.clicks), num(x.events), num(x.uv), small(x.first_seen), small(x.last_seen)
+      ]));
+    }
+
+    function renderSimpleTable(el, heads, rows) {
+      renderTable(el, heads, rows.map(r => r.map((v, i) => i === 0 ? cell(v) : num(v))));
+    }
+
+    function renderEvents(rows) {
+      renderTable($('eventTable'), ['时间', '事件', 'IP', '页面', '类别/标签', '目标', '停留', '滚动', '详情'], rows.map(x => [
+        small(x.received_at),
+        tag(x.event),
+        `<code>${escapeHtml(x.ip || '-')}</code>`,
+        cell(x.page || '-'),
+        `<div>${tag(x.category || '-')}</div><div class="muted truncate">${escapeHtml(x.label || '')}</div>`,
+        `<div class="truncate">${escapeHtml(x.target_text || '')}</div><div class="muted truncate">${escapeHtml(x.target_url || '')}</div>`,
+        duration(x.duration_ms),
+        x.scroll_percent == null ? '-' : num(x.scroll_percent) + '%',
+        `<details><summary>查看</summary><pre>${escapeHtml(JSON.stringify({ visitorId: x.visitor_id, sessionId: x.session_id, referrer: x.referrer, userAgent: x.user_agent, data: x.data }, null, 2))}</pre></details>`
+      ]));
+    }
+
+    function renderTable(el, heads, rows) {
+      el.innerHTML = `<thead><tr>${heads.map(h => `<th>${escapeHtml(h)}</th>`).join('')}</tr></thead>` +
+        `<tbody>${rows.length ? rows.map(r => `<tr>${r.map(c => `<td>${c}</td>`).join('')}</tr>`).join('') : `<tr><td colspan="${heads.length}" class="muted">暂无数据</td></tr>`}</tbody>`;
+    }
+
+    function tag(text) { return `<span class="tag">${escapeHtml(text || '-')}</span>`; }
+    function small(text) { return `<span class="muted">${escapeHtml(text || '-')}</span>`; }
+    function cell(text) { return `<div class="truncate" title="${escapeHtml(text || '-')}">${escapeHtml(text || '-')}</div>`; }
+    function linkCell(url) {
+      if (!url) return '-';
+      return `<a class="truncate" style="display:block;color:#67e8f9;max-width:320px;" href="${escapeAttr(url)}" target="_blank" rel="noopener">${escapeHtml(url)}</a>`;
+    }
+    function num(value) { return Number(value || 0).toLocaleString('zh-CN'); }
+    function duration(ms) {
+      ms = Number(ms || 0);
+      if (!ms) return '0 秒';
+      const sec = Math.round(ms / 1000);
+      if (sec < 60) return sec + ' 秒';
+      const min = Math.floor(sec / 60);
+      const rest = sec % 60;
+      if (min < 60) return min + '分' + rest + '秒';
+      const hour = Math.floor(min / 60);
+      return hour + '时' + (min % 60) + '分';
+    }
+    function showError(text) { $('errorBox').style.display = 'block'; $('errorBox').textContent = text; }
+    function hideError() { $('errorBox').style.display = 'none'; $('errorBox').textContent = ''; }
+    function escapeHtml(value) { return String(value == null ? '' : value).replace(/[&<>'"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[c])); }
+    function escapeAttr(value) { return escapeHtml(value).replace(/`/g, '&#96;'); }
+  </script>
+</body>
+</html>

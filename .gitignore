@@ -33,3 +33,9 @@ tests/__pycache__/
 # 其他
 *.bak
 *.tmp
+
+# 埋点服务本地数据与运行产物
+analytics-server/data/*.db
+analytics-server/data/*.db-*
+analytics-server/*.pid
+analytics-server/.env
