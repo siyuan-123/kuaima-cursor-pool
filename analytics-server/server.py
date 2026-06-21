@@ -60,7 +60,7 @@ PUBLIC_DIR = BASE_DIR / "public"
 DB_PATH = Path(os.getenv("ANALYTICS_DB_PATH", str(BASE_DIR / "data" / "analytics.db")))
 HOST = os.getenv("ANALYTICS_HOST", "0.0.0.0")
 PORT = int(os.getenv("ANALYTICS_PORT", "8088"))
-PUBLIC_BASE_URL = os.getenv("ANALYTICS_PUBLIC_BASE_URL", "https://track.785886.top").rstrip("/")
+PUBLIC_BASE_URL = os.getenv("ANALYTICS_PUBLIC_BASE_URL", "https://track.666166.top").rstrip("/")
 ADMIN_USER = os.getenv("ANALYTICS_ADMIN_USER", "admin")
 ADMIN_PASSWORD = os.getenv("ANALYTICS_ADMIN_PASSWORD", "admin123456")
 TIMEZONE_NAME = os.getenv("ANALYTICS_TIMEZONE", "Asia/Shanghai")
@@ -69,9 +69,9 @@ DEFAULT_ALLOWED_ORIGINS = ",".join(
     [
         "https://kuaima-cursor-pool.onrender.com",
         "http://kuaima-cursor-pool.onrender.com",
-        "https://785886.top",
-        "https://www.785886.top",
-        "https://track.785886.top",
+        "https://666166.top",
+        "https://www.666166.top",
+        "https://track.666166.top",
         "http://43.156.19.2",
         "http://43.156.19.2:8088",
         "https://43.156.19.2",

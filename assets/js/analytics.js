@@ -8,7 +8,7 @@
    * - 上报接口可在页面中通过 window.KUAI_MA_ANALYTICS_ENDPOINT 覆盖
    */
 
-  var DEFAULT_ENDPOINT = 'https://track.785886.top/api/track';
+  var DEFAULT_ENDPOINT = 'https://track.666166.top/api/track';
   var endpoint = window.KUAI_MA_ANALYTICS_ENDPOINT || DEFAULT_ENDPOINT;
   var heartbeatIntervalMs = Number(window.KUAI_MA_ANALYTICS_HEARTBEAT || 15000);
   var maxTextLength = 120;

@@ -5,13 +5,13 @@
 前端埋点脚本已经默认上报到你的 HTTPS 域名：
 
 ```text
-https://track.785886.top/api/track
+https://track.666166.top/api/track
 ```
 
 统计后台：
 
 ```text
-https://track.785886.top/dashboard
+https://track.666166.top/dashboard
 ```
 
 后台登录：

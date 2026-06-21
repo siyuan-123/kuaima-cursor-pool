@@ -14,13 +14,13 @@
 前端埋点脚本已经默认上报到：
 
 ```text
-https://track.785886.top/api/track
+https://track.666166.top/api/track
 ```
 
 统计后台地址：
 
 ```text
-https://track.785886.top/dashboard
+https://track.666166.top/dashboard
 ```
 
 后台登录：
@@ -82,15 +82,15 @@ python3 server.py
 cat > /www/kuaima-cursor-pool/analytics-server/.env <<'EOF'
 ANALYTICS_HOST=127.0.0.1
 ANALYTICS_PORT=8088
-ANALYTICS_PUBLIC_BASE_URL=https://track.785886.top
+ANALYTICS_PUBLIC_BASE_URL=https://track.666166.top
 ANALYTICS_ADMIN_USER=admin
 ANALYTICS_ADMIN_PASSWORD=#8dk2SCLtf^Wo6k%P+4mx!JP
-ANALYTICS_ALLOWED_ORIGINS=https://kuaima-cursor-pool.onrender.com,https://785886.top,https://www.785886.top,https://track.785886.top
+ANALYTICS_ALLOWED_ORIGINS=https://kuaima-cursor-pool.onrender.com,https://666166.top,https://www.666166.top,https://track.666166.top
 ANALYTICS_TIMEZONE=Asia/Shanghai
 EOF
 ```
 
-> 如果你的主站最终不是 `kuaima-cursor-pool.onrender.com`、`785886.top` 或 `www.785886.top`，需要把主站域名追加到 `ANALYTICS_ALLOWED_ORIGINS`。
+> 如果你的主站最终不是 `kuaima-cursor-pool.onrender.com`、`666166.top` 或 `www.666166.top`，需要把主站域名追加到 `ANALYTICS_ALLOWED_ORIGINS`。
 
 ## systemd 常驻示例
 
@@ -123,14 +123,14 @@ sudo systemctl status kuaima-analytics
 
 ## Nginx HTTPS 反代配置
 
-`track.785886.top` 已经用于 HTTPS 埋点域名，推荐 Nginx 反代到本机 `8088` 端口。
+`track.666166.top` 已经用于 HTTPS 埋点域名，推荐 Nginx 反代到本机 `8088` 端口。
 
 ### HTTP 自动跳转 HTTPS
 
 ```nginx
 server {
     listen 80;
-    server_name track.785886.top;
+    server_name track.666166.top;
     return 301 https://$host$request_uri;
 }
 ```
@@ -140,10 +140,10 @@ server {
 ```nginx
 server {
     listen 443 ssl http2;
-    server_name track.785886.top;
+    server_name track.666166.top;
 
-    ssl_certificate /etc/letsencrypt/live/track.785886.top/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/track.785886.top/privkey.pem;
+    ssl_certificate /etc/letsencrypt/live/track.666166.top/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/track.666166.top/privkey.pem;
 
     client_max_body_size 256k;
 
@@ -160,7 +160,7 @@ server {
 }
 ```
 
-如果你用的是宝塔、1Panel 或其他面板，本质就是把 `track.785886.top` 反代到：
+如果你用的是宝塔、1Panel 或其他面板，本质就是把 `track.666166.top` 反代到：
 
 ```text
 http://127.0.0.1:8088
@@ -192,7 +192,7 @@ X-Forwarded-For
 | --- | --- | --- |
 | `ANALYTICS_HOST` | `127.0.0.1` | 只监听本机，交给 Nginx 反代，更安全 |
 | `ANALYTICS_PORT` | `8088` | 监听端口 |
-| `ANALYTICS_PUBLIC_BASE_URL` | `https://track.785886.top` | 对外地址 |
+| `ANALYTICS_PUBLIC_BASE_URL` | `https://track.666166.top` | 对外地址 |
 | `ANALYTICS_DB_PATH` | 默认 `analytics-server/data/analytics.db` | SQLite 数据库路径 |
 | `ANALYTICS_ADMIN_USER` | `admin` | 后台账号 |
 | `ANALYTICS_ADMIN_PASSWORD` | 已在 `.env` 设置 | 后台密码 |
