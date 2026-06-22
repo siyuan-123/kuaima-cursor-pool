@@ -123,7 +123,7 @@
       <nav class="nav" id="primaryNav" aria-label="primary navigation">
         <a href="index.html" data-i18n="nav.home">首页</a>
         <a href="tutorial.html" class="is-active" data-i18n="nav.tutorial">使用教程</a>
-        <a href="index.html#download" data-i18n="nav.download">下载</a>
+        <a href="index.html#download" data-smart-download data-i18n="nav.download">下载</a>
         <a href="index.html#contact" data-i18n="nav.contact">联系客服</a>
       </nav>
 
@@ -192,7 +192,7 @@
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
             <span data-i18n="tutorial.back">返回首页</span>
           </a>
-          <a href="https://wwaps.lanzoue.com/i7DfZ3o5iolg" target="_blank" rel="noopener" class="btn btn-ghost btn-lg">
+          <a href="https://wwaps.lanzoue.com/i7DfZ3o5iolg" target="_blank" rel="noopener" class="btn btn-ghost btn-lg" data-smart-download>
             <span data-i18n="cta.download">立即下载</span>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
           </a>
@@ -200,6 +200,56 @@
       </div>
     </section>
   </main>
+
+  <!-- 下载助手：移动端提示 / Linux 或未知系统的选择器 -->
+  <aside class="download-helper" data-download-helper aria-hidden="true" aria-label="下载助手" data-i18n-attr="aria-label:download.helper.aria">
+    <div class="download-helper__backdrop" data-download-helper-backdrop></div>
+    <div class="download-helper__panel" role="dialog" aria-modal="true" aria-labelledby="downloadHelperTitle">
+      <button type="button" class="download-helper__close" data-download-helper-close aria-label="关闭下载助手" data-i18n-attr="aria-label:download.helper.close">×</button>
+
+      <div class="download-helper__state download-helper__state--mobile">
+        <div class="download-helper__icon download-helper__icon--mobile" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="2" width="12" height="20" rx="2" ry="2"></rect><line x1="11" y1="18" x2="13" y2="18"></line></svg>
+        </div>
+        <h3 id="downloadHelperTitle" class="download-helper__title" data-i18n="download.helper.mobileTitle">请用电脑访问下载</h3>
+        <p class="download-helper__desc" data-i18n="download.helper.mobileDesc">Cursor 客户端仅支持 Windows / macOS。请用电脑访问本页，或复制下方链接到电脑浏览器打开。</p>
+        <div class="download-helper__links">
+          <div class="download-helper__link">
+            <span class="download-helper__link-label">Windows</span>
+            <code class="download-helper__link-url">https://wwaps.lanzoue.com/i7DfZ3o5iolg</code>
+            <button type="button" class="copy-btn download-helper__copy" data-copy="https://wwaps.lanzoue.com/i7DfZ3o5iolg" data-i18n="download.helper.copyWin">复制 Win 链接</button>
+          </div>
+          <div class="download-helper__link">
+            <span class="download-helper__link-label">macOS</span>
+            <code class="download-helper__link-url">https://share.feijipan.com/s/ud4OdIFj</code>
+            <button type="button" class="copy-btn download-helper__copy" data-copy="https://share.feijipan.com/s/ud4OdIFj" data-i18n="download.helper.copyMac">复制 Mac 链接</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="download-helper__state download-helper__state--picker">
+        <div class="download-helper__icon download-helper__icon--picker" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.88 18.09A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.29"></path><polyline points="8 17 12 21 16 17"></polyline><line x1="12" y1="12" x2="12" y2="21"></line></svg>
+        </div>
+        <h3 class="download-helper__title" data-i18n="download.helper.chooseTitle">请选择你的系统</h3>
+        <p class="download-helper__desc" data-i18n="download.helper.chooseDesc">我们没能识别出你的系统，请手动选择对应的版本。</p>
+        <div class="download-helper__picks">
+          <button type="button" class="download-helper__pick" data-helper-pick="win">
+            <span class="download-helper__pick-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 5.4l8.4-1.16v8.27H3V5.4zm0 13.2v-7.36h8.4v8.52L3 18.6zM12.6 4.04L24 2.4v9.71h-11.4V4.04zm0 16.92v-7.85H24V21.6l-11.4-1.64z"/></svg>
+            </span>
+            <span class="download-helper__pick-label" data-i18n="download.helper.pickWin">Windows 版</span>
+          </button>
+          <button type="button" class="download-helper__pick" data-helper-pick="mac">
+            <span class="download-helper__pick-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M16.365 1.43c0 1.14-.49 2.27-1.27 3.06-.78.78-2.06 1.36-3.13 1.27-.13-1.13.42-2.27 1.13-3 .8-.81 2.16-1.41 3.27-1.33zM20.86 17.13c-.62 1.37-1.34 2.7-2.45 3.99-.94 1.1-2.13 2.49-3.61 2.5-1.36.01-1.7-.86-3.55-.86-1.85 0-2.21.88-3.56.87-1.43-.01-2.52-1.31-3.46-2.41-2.61-3.06-4.6-8.66-1.91-12.45 1.34-1.88 3.74-3.07 6.02-3.07 1.39 0 2.7.93 3.56.93.86 0 2.46-1.15 4.13-.98.7.03 2.66.28 3.92 2.13-3.42 1.99-2.86 6.93.91 9.35z"/></svg>
+            </span>
+            <span class="download-helper__pick-label" data-i18n="download.helper.pickMac">macOS 版</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </aside>
 
   <footer class="site-footer">
     <div class="container">

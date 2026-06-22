@@ -11,6 +11,12 @@
 
   var initialized = false;
 
+  // 下载链接配置（统一改动这里即可，所有入口同步生效）
+  var DOWNLOAD_URLS = {
+    win: 'https://wwaps.lanzoue.com/i7DfZ3o5iolg',
+    mac: 'https://share.feijipan.com/s/ud4OdIFj'
+  };
+
   function init() {
     if (initialized) return;
     initialized = true;
@@ -20,6 +26,8 @@
     initFloatingWechat();
     initMenuToggle();
     initOSDetection();
+    initSmartDownload();
+    initDownloadHelper();
     initLangChangeReset();
     initSmoothAnchor();
   }
@@ -166,7 +174,7 @@
     }, 1800);
   }
 
-  /** ---------------------- 悬浮客服二维码 ---------------------- */
+  /** ---------------------- 悬浮客服 + 中央弹窗 ---------------------- */
   function initFloatingWechat() {
     const widget = document.querySelector('[data-floating-wechat]');
     if (!widget) return;
@@ -174,61 +182,116 @@
     const toggle = widget.querySelector('[data-floating-wechat-toggle]');
     const panel = widget.querySelector('.floating-wechat__panel');
     const close = widget.querySelector('[data-floating-wechat-close]');
+    const backdrop = widget.querySelector('[data-floating-wechat-backdrop]');
+    const hint = widget.querySelector('[data-floating-wechat-hint]');
     if (!toggle || !panel) return;
 
+    const SEEN_KEY = 'kuaima_support_seen';
+    const FOCUSABLE_SEL = 'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])';
+    let lastFocused = null;
+    let hintTimer = 0;
+
+    function isSeen() {
+      try {
+        return window.localStorage && window.localStorage.getItem(SEEN_KEY) === '1';
+      } catch (err) {
+        return false;
+      }
+    }
+
+    function markSeen() {
+      try {
+        if (window.localStorage) window.localStorage.setItem(SEEN_KEY, '1');
+      } catch (err) {
+        // 静默忽略：隐私模式下 localStorage 可能不可用
+      }
+      widget.classList.add('is-seen');
+    }
+
+    function setHintVisible(visible) {
+      widget.classList.toggle('is-hint-visible', !!visible);
+      if (hint) hint.setAttribute('aria-hidden', visible ? 'false' : 'true');
+    }
+
     function setOpen(open) {
-      widget.classList.toggle('is-open', open);
+      widget.classList.toggle('is-modal-open', open);
       toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
       panel.setAttribute('aria-hidden', open ? 'false' : 'true');
+      if (backdrop) {
+        if (open) backdrop.removeAttribute('hidden');
+        else backdrop.setAttribute('hidden', '');
+      }
+      document.body.classList.toggle('is-support-open', open);
     }
 
     function openSupport(options) {
       const opts = options || {};
+      lastFocused = document.activeElement;
+      setHintVisible(false);
+      window.clearTimeout(hintTimer);
+      markSeen();
       setOpen(true);
-      widget.classList.remove('is-attention');
-      // 强制重启动画，让已经展开时再次点击也有“弹出”反馈
-      void widget.offsetWidth;
-      widget.classList.add('is-attention');
-      window.clearTimeout(widget._supportAttentionTimer);
-      widget._supportAttentionTimer = window.setTimeout(() => {
-        widget.classList.remove('is-attention');
-      }, 1200);
 
-      if (opts.focus) {
-        const focusTarget = widget.querySelector('.floating-wechat__copy') || close || toggle;
-        if (focusTarget && typeof focusTarget.focus === 'function') {
-          focusTarget.focus({ preventScroll: true });
-        }
+      if (opts.focus !== false) {
+        const focusTarget = close || panel.querySelector(FOCUSABLE_SEL) || panel;
+        window.setTimeout(() => {
+          if (focusTarget && typeof focusTarget.focus === 'function') {
+            focusTarget.focus({ preventScroll: true });
+          }
+        }, 60);
+      }
+    }
+
+    function closeSupport() {
+      if (!widget.classList.contains('is-modal-open')) return;
+      setOpen(false);
+      const target = lastFocused && document.contains(lastFocused) ? lastFocused : toggle;
+      if (target && typeof target.focus === 'function') {
+        target.focus({ preventScroll: true });
       }
     }
 
     window.KuaiMaOpenSupport = openSupport;
+    window.KuaiMaCloseSupport = closeSupport;
 
-    setOpen(widget.classList.contains('is-open'));
-
-    if (window.location.hash === '#contact') {
-      window.setTimeout(() => openSupport({ focus: false }), 120);
-    }
+    setOpen(false);
 
     toggle.addEventListener('click', e => {
       e.preventDefault();
-      setOpen(!widget.classList.contains('is-open'));
+      if (widget.classList.contains('is-modal-open')) closeSupport();
+      else openSupport({ focus: true });
     });
 
     if (close) {
       close.addEventListener('click', e => {
         e.preventDefault();
-        setOpen(false);
-        toggle.focus();
+        closeSupport();
       });
     }
 
+    if (backdrop) {
+      backdrop.addEventListener('click', () => closeSupport());
+    }
+
     document.addEventListener('keydown', e => {
-      if (e.key === 'Escape') setOpen(false);
+      if (e.key === 'Escape' && widget.classList.contains('is-modal-open')) {
+        closeSupport();
+      }
     });
 
-    if (window.matchMedia && window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
-      widget.addEventListener('mouseenter', () => setOpen(true));
+    if (window.location.hash === '#contact') {
+      window.setTimeout(() => openSupport({ focus: false }), 160);
+    }
+
+    if (!isSeen()) {
+      hintTimer = window.setTimeout(() => {
+        if (!widget.classList.contains('is-modal-open')) {
+          setHintVisible(true);
+          hintTimer = window.setTimeout(() => setHintVisible(false), 3200);
+        }
+      }, 600);
+    } else {
+      widget.classList.add('is-seen');
     }
   }
 
@@ -279,6 +342,125 @@
     if (parent && parent.firstElementChild !== primary) {
       parent.insertBefore(primary, parent.firstElementChild);
     }
+  }
+
+  /** ---------------------- 智能下载跳转 ---------------------- */
+  function detectOS() {
+    const ua = (navigator.userAgent || '').toLowerCase();
+    const platform = (navigator.platform || '').toLowerCase();
+    const uaData = navigator.userAgentData || null;
+
+    // 新版 UA Client Hints 优先
+    if (uaData && uaData.platform) {
+      const p = uaData.platform.toLowerCase();
+      if (uaData.mobile) return 'mobile';
+      if (p.indexOf('mac') !== -1) return 'mac';
+      if (p.indexOf('win') !== -1) return 'win';
+      if (p.indexOf('linux') !== -1) return 'linux';
+    }
+
+    // 移动端嗅探（含 Android / iOS / Windows Phone / 通用 mobile 标识）
+    if (/iphone|ipod|android.*mobile|windows phone|blackberry|bb10|opera mini/i.test(ua)) {
+      return 'mobile';
+    }
+    // iPad 13+ 在桌面模式下伪装成 Macintosh，借助 maxTouchPoints 区分
+    if (/ipad/i.test(ua) || (platform.indexOf('mac') !== -1 && navigator.maxTouchPoints > 1)) {
+      return 'mobile';
+    }
+    // Android 平板
+    if (/android/i.test(ua)) {
+      return 'mobile';
+    }
+
+    if (/mac/.test(platform) || /macintosh/i.test(ua)) return 'mac';
+    if (/win/.test(platform) || /windows/i.test(ua)) return 'win';
+    if (/linux/.test(platform) || /linux/i.test(ua) || /cros/i.test(ua)) return 'linux';
+    return 'unknown';
+  }
+
+  function smartDownload(preferOS) {
+    const os = preferOS || detectOS();
+
+    if (os === 'win' || os === 'mac') {
+      window.open(DOWNLOAD_URLS[os], '_blank', 'noopener,noreferrer');
+      return os;
+    }
+    if (os === 'mobile') {
+      openDownloadHelper('mobile');
+      return os;
+    }
+    // linux / unknown 走选择器
+    openDownloadHelper('picker');
+    return os;
+  }
+
+  window.KuaiMaSmartDownload = smartDownload;
+
+  function openDownloadHelper(state) {
+    const helper = document.querySelector('[data-download-helper]');
+    if (!helper) {
+      // 没有助手 DOM 时降级：直接打开 win 链接
+      window.open(DOWNLOAD_URLS.win, '_blank', 'noopener,noreferrer');
+      return;
+    }
+    helper.setAttribute('data-state', state || 'picker');
+    helper.classList.add('is-open');
+    document.body.classList.add('is-helper-open');
+
+    const closeBtn = helper.querySelector('[data-download-helper-close]');
+    if (closeBtn) {
+      window.setTimeout(() => closeBtn.focus({ preventScroll: true }), 60);
+    }
+  }
+
+  function closeDownloadHelper() {
+    const helper = document.querySelector('[data-download-helper]');
+    if (!helper) return;
+    helper.classList.remove('is-open');
+    document.body.classList.remove('is-helper-open');
+  }
+
+  window.KuaiMaCloseDownload = closeDownloadHelper;
+
+  function initSmartDownload() {
+    // 拦截所有标记了 data-smart-download 的入口
+    document.querySelectorAll('[data-smart-download]').forEach(el => {
+      el.addEventListener('click', e => {
+        e.preventDefault();
+        smartDownload();
+      });
+    });
+  }
+
+  function initDownloadHelper() {
+    const helper = document.querySelector('[data-download-helper]');
+    if (!helper) return;
+
+    const backdrop = helper.querySelector('[data-download-helper-backdrop]');
+    const closeBtns = helper.querySelectorAll('[data-download-helper-close]');
+
+    closeBtns.forEach(btn => btn.addEventListener('click', closeDownloadHelper));
+    if (backdrop) backdrop.addEventListener('click', closeDownloadHelper);
+
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape' && helper.classList.contains('is-open')) {
+        closeDownloadHelper();
+      }
+    });
+
+    // picker 模式中的 Win/Mac 选择按钮
+    helper.querySelectorAll('[data-helper-pick]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const os = btn.getAttribute('data-helper-pick');
+        closeDownloadHelper();
+        if (os === 'win' || os === 'mac') {
+          window.open(DOWNLOAD_URLS[os], '_blank', 'noopener,noreferrer');
+        }
+      });
+    });
+
+    // mobile 模式中的复制链接按钮（复用 data-copy 走 copy-btn 流程）
+    // 复制反馈由 initCopyButtons 接管，这里只兜底
   }
 
   /** ---------------------- 语言切换响应 ---------------------- */
