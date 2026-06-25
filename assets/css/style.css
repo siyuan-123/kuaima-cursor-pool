@@ -1618,7 +1618,7 @@ body.is-helper-open {
 }
 
 /* ==========================================================================
-   教程页：抖音教程入口
+   教程页：视频版 / 文字版教程入口
    ========================================================================== */
 .tutorial-hero {
   padding: 56px 0 32px;
@@ -1637,13 +1637,56 @@ body.is-helper-open {
 
 .tutorial-links {
   padding-top: 24px;
-  padding-bottom: 48px;
+  padding-bottom: 42px;
+}
+
+.tutorial-links--text {
+  padding-top: 24px;
+  padding-bottom: 42px;
+}
+
+.tutorial-links--video {
+  padding-top: 0;
+  padding-bottom: 56px;
+}
+
+.tutorial-section-heading {
+  max-width: 760px;
+  margin-bottom: 22px;
+}
+
+.tutorial-section-heading h2 {
+  margin-top: 8px;
+  margin-bottom: 10px;
+  font-size: clamp(1.5rem, 3vw, 2.1rem);
+}
+
+.tutorial-section-heading .eyebrow {
+  display: inline-block;
+  padding: 6px 14px;
+  background: var(--gradient-primary-soft);
+  border: 1px solid var(--border-glow);
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--color-primary);
+  margin-bottom: 8px;
+  letter-spacing: 0.05em;
+}
+
+.tutorial-section-heading p {
+  max-width: 680px;
+  color: var(--text-secondary);
 }
 
 .tutorial-link-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 22px;
+}
+
+.tutorial-link-grid--single {
+  grid-template-columns: minmax(0, 1fr);
 }
 
 .tutorial-link-card {
@@ -1689,6 +1732,14 @@ body.is-helper-open {
 .tutorial-link-card--accent {
   background:
     radial-gradient(circle at 0% 0%, rgba(16, 185, 129, 0.22), transparent 40%),
+    var(--bg-card);
+}
+
+.tutorial-link-card--text {
+  min-height: 190px;
+  background:
+    radial-gradient(circle at 0% 0%, rgba(139, 92, 246, 0.22), transparent 40%),
+    radial-gradient(circle at 100% 100%, rgba(6, 182, 212, 0.14), transparent 34%),
     var(--bg-card);
 }
 
