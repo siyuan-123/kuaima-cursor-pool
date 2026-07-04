@@ -121,7 +121,7 @@
     if (el.hasAttribute('data-lang-btn')) return 'switch_language';
     if (href.indexOf('#contact') >= 0 || text.indexOf('contact') >= 0 || text.indexOf('客服') >= 0) return 'contact';
     if (href.indexOf('#download') >= 0) return 'download_section';
-    if (/lanzou|feijipan|download|windows|macos|立即下载|下载/.test(text)) return 'download';
+    if (/feijipan|download|windows|macos|立即下载|下载/.test(text)) return 'download';
     if (/tutorial|教程|douyin|抖音/.test(text)) return 'tutorial';
     if (/^https?:\/\//i.test(href) && href.indexOf(location.hostname) === -1) return 'external_link';
     if (href && href.charAt(0) === '#') return 'anchor';

@@ -13,8 +13,8 @@
 
   // 下载链接配置（统一改动这里即可，所有入口同步生效）
   var DOWNLOAD_URLS = {
-    win: 'https://wwaps.lanzoue.com/i7DfZ3o5iolg',
-    mac: 'https://share.feijipan.com/s/ud4OdIFj'
+    win: 'https://share.feijipan.com/s/eQdnQGzh',
+    mac: 'https://share.feijipan.com/s/9GdnQTIJ'
   };
 
   function init() {

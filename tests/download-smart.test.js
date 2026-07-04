@@ -32,6 +32,8 @@
 
   // hook window.open 以便观察跳转参数（不真的开新页）
   const openCalls = [];
+  const WIN_URL = 'https://share.feijipan.com/s/eQdnQGzh';
+  const MAC_URL = 'https://share.feijipan.com/s/9GdnQTIJ';
   const originalOpen = window.open;
   function hookOpen() {
     window.open = function (url, target, features) {
@@ -58,8 +60,8 @@
     const pickerState = helper && helper.querySelector('.download-helper__state--picker');
     const pickWin = helper && helper.querySelector('[data-helper-pick="win"]');
     const pickMac = helper && helper.querySelector('[data-helper-pick="mac"]');
-    const copyWin = helper && helper.querySelector('[data-copy*="lanzou"]');
-    const copyMac = helper && helper.querySelector('[data-copy*="feijipan"]');
+    const copyWin = helper && helper.querySelector('[data-copy="' + WIN_URL + '"]');
+    const copyMac = helper && helper.querySelector('[data-copy="' + MAC_URL + '"]');
 
     check('3. download-helper 容器存在', !!helper);
     check('4. backdrop 遮罩存在', !!backdrop);
@@ -84,7 +86,7 @@
     await wait(60);
     const winOpen = openCalls[0];
     check('13. win 分支调用 window.open', !!winOpen);
-    check('14. win 分支跳蓝奏云', winOpen && /lanzoue\.com/.test(winOpen.url), winOpen ? winOpen.url : '');
+    check('14. win 分支跳新 Windows 下载地址', winOpen && winOpen.url === WIN_URL, winOpen ? winOpen.url : '');
     check('15. win 分支 target=_blank', winOpen && winOpen.target === '_blank');
 
     // 5) mac 分支
@@ -93,7 +95,7 @@
     await wait(60);
     const macOpen = openCalls[0];
     check('16. mac 分支调用 window.open', !!macOpen);
-    check('17. mac 分支跳飞机盘', macOpen && /feijipan\.com/.test(macOpen.url), macOpen ? macOpen.url : '');
+    check('17. mac 分支跳新 macOS 下载地址', macOpen && macOpen.url === MAC_URL, macOpen ? macOpen.url : '');
 
     // 6) mobile 分支
     openCalls.length = 0;
@@ -137,7 +139,7 @@
     await wait(120);
     check('28. picker Win 点击后 helper 关闭', !helper.classList.contains('is-open'));
     const pickWinOpen = openCalls[0];
-    check('29. picker Win 触发 window.open lanzou', pickWinOpen && /lanzoue\.com/.test(pickWinOpen.url));
+    check('29. picker Win 触发 window.open 新 Windows 下载地址', pickWinOpen && pickWinOpen.url === WIN_URL);
 
     // 12) picker → 点 Mac 按钮
     window.KuaiMaSmartDownload('unknown');
@@ -146,7 +148,7 @@
     pickMac.click();
     await wait(120);
     const pickMacOpen = openCalls[0];
-    check('30. picker Mac 触发 window.open feijipan', pickMacOpen && /feijipan\.com/.test(pickMacOpen.url));
+    check('30. picker Mac 触发 window.open 新 macOS 下载地址', pickMacOpen && pickMacOpen.url === MAC_URL);
 
     // 13) mobile 复制按钮
     window.KuaiMaSmartDownload('mobile');
@@ -176,7 +178,7 @@
       await wait(120);
       let detected = 'unknown';
       if (openCalls.length === 1) {
-        detected = /lanzoue\.com/.test(openCalls[0].url) ? 'win' : 'mac';
+        detected = openCalls[0].url === WIN_URL ? 'win' : 'mac';
       } else if (helper.classList.contains('is-open')) {
         detected = helper.getAttribute('data-state') === 'mobile' ? 'mobile' : 'picker';
       }
